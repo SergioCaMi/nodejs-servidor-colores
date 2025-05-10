@@ -18,6 +18,7 @@ const colors = [
 
 const http = require("http");
 const url = require("url");
+const fs = require('fs');
 
 // req: es un objeto que contiene información  y métodos sobre la petición que se acaba de producir
 // res: es un objeto que contiene métodos para realizar una respuesta al cliente
@@ -26,8 +27,9 @@ const server = http.createServer((req, res) => {
   const path = parsedUrl.pathname;
   const query = parsedUrl.query; //Hay queryString
   const variant = query.variant; //Valor
+  const animals = JSON.parse(fs.readFileSync('./files/animals.json', 'utf-8'));// Leemos el fichero json
+
   res.setHeader("Content-Type", "text/html; charset=utf-8");
-  console.log(path, variant);
   if (path == "/") {
     res.write(`
             <h1>Bienvenidos a la base de datos de colores de NetMind!</h1>
@@ -72,9 +74,28 @@ const server = http.createServer((req, res) => {
       </ul>
     `);
     res.end();
+    
+
+  } else if (path == "/get-animal") {
+    if (typeof variant !== "undefined") {
+      const animal = animals.find(a => a.variant === variant);
+      if (animal){
+        res.write(`
+          <article>
+            <h2>${animal.animalName}</h2>
+            <img src="${animal.urlImage}" alt="Imagen de ${animal.animalName}" style="max-width: 300px;">
+          </article>
+        `);
+   
+      res.end();
+  
+      } else {
+
+      }
+    }
+
   } else {
     // estas intentando acceder a un recurso que no existe
-    console.log(path, typeof variant !== "undefined");
 
     res.statusCode = 404;
     res.write("<h1>Página no encontrada</h1>");
