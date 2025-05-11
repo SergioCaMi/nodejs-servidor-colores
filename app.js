@@ -40,7 +40,7 @@ const server = http.createServer((req, res) => {
     `);
     res.end();
   } else if (path == "/color") {
-    if (typeof variant !== "undefined") {
+    if (variant) {
       //Si hay queryString
       const colorFound = colors.find((c) => c.variant == variant);
 
@@ -77,7 +77,8 @@ const server = http.createServer((req, res) => {
     
 
   } else if (path == "/get-animal") {
-    if (typeof variant !== "undefined") {
+
+    if (variant) {
       const animal = animals.find(a => a.variant === variant);
       if (animal){
         res.write(`
