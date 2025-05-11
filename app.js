@@ -65,7 +65,6 @@ const server = http.createServer((req, res) => {
       <h2>Lista de colores de NetMind!</h2>
       <ul>
     `);
-//res.write(`<li><a href="/color?variant=${element.variant}">${element.variant}</a></li>`);
     colors.forEach((color) => {
       res.write(`<li><a href="/color?variant=${color.variant}">${color.variant}</a></li>`);
     });
