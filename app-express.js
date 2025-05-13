@@ -28,9 +28,11 @@ app.get('/', (req, res)=>{
 
 
 app.get('/color', (req, res)=>{
-    const color = lodash.sample(colors);
+    let color = "";
+    req.query.variant ? color = colors.find((c) => c.variant == req.query.variant):color = lodash.sample(colors);
     res.send(`<p style="color: ${color.hex};">El color escogido ha sido el ${color.variant}.</p>`);
 });
+
 
 app.listen(port,()=>{
     console.log('Servidor escuchando en http://localhost:3000');
