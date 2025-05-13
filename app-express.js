@@ -30,7 +30,22 @@ app.get('/', (req, res)=>{
 app.get('/color', (req, res)=>{
     let color = "";
     req.query.variant ? color = colors.find((c) => c.variant == req.query.variant):color = lodash.sample(colors);
+    if (color == undefined) color = lodash.sample(colors);
     res.send(`<p style="color: ${color.hex};">El color escogido ha sido el ${color.variant}.</p>`);
+});
+
+app.get('/get-colors', (req, res)=>{
+    const colores = colors.map(color =>
+        `<li><a href="/color?variant=${color.variant}" style="color: ${color.hex};">${color.variant}</a></li>`
+    ).join('');
+
+    let responseHTML = `
+      <h2>Lista de colores de NetMind!</h2>
+      <ul>
+      ${colores}
+      </ul>
+    `;
+    res.send(responseHTML);
 });
 
 
