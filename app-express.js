@@ -1,7 +1,9 @@
-const express = require('express');
+const express = require("express");
 const app = express();
-const lodash = require('lodash');
+const lodash = require("lodash");
 const port = 3000;
+const fs = require("fs");
+const animals = JSON.parse(fs.readFileSync("./files/animals.json", "utf-8")); // Leemos el fichero json
 
 const colors = [
   { variant: "Vermillion", hex: "#2E191B" },
@@ -21,35 +23,47 @@ const colors = [
   { variant: "Coral", hex: "#FF7F50" },
 ];
 
-
-app.get('/', (req, res)=>{
-    res.send('<h1>Bienvenido a Express</h1>');
+app.get("/", (req, res) => {
+  res.send("<h1>Bienvenido a Express</h1>");
 });
 
-
-app.get('/color', (req, res)=>{
-    let color = "";
-    req.query.variant ? color = colors.find((c) => c.variant == req.query.variant):color = lodash.sample(colors);
-    if (color == undefined) color = lodash.sample(colors);
-    res.send(`<p style="color: ${color.hex};">El color escogido ha sido el ${color.variant}.</p>`);
+app.get("/color", (req, res) => {
+  let color = "";
+  req.query.variant
+    ? (color = colors.find((c) => c.variant == req.query.variant))
+    : (color = lodash.sample(colors));
+  if (color == undefined) color = lodash.sample(colors);
+  res.send(
+    `<p style="color: ${color.hex};">El color escogido ha sido el ${color.variant}.</p>`
+  );
 });
 
-app.get('/get-colors', (req, res)=>{
-    const colores = colors.map(color =>
+app.get("/get-colors", (req, res) => {
+  const colores = colors
+    .map(
+      (color) =>
         `<li><a href="/color?variant=${color.variant}" style="color: ${color.hex};">${color.variant}</a></li>`
-    ).join('');
+    )
+    .join("");
 
-    let responseHTML = `
+  let responseHTML = `
       <h2>Lista de colores de NetMind!</h2>
       <ul>
       ${colores}
       </ul>
     `;
-    res.send(responseHTML);
+  res.send(responseHTML);
 });
 
-
-app.listen(port,()=>{
-    console.log('Servidor escuchando en http://localhost:3000');
+app.get("/get-animal", (req, res) => {
+  const animal = animals.find((a) => a.variant === req.query.variant);
+  req.query.variant
+    ? res.send(
+        `<article><h2>${animal.animalName}</h2><img src="${animal.urlImage}" alt="Imagen de ${animal.animalName}" style="max-width: 300px;"> </article>`
+      )
+    : res.send(`<article><h2>Faltan datos</article>`);
 });
 
+app.listen(port, () => {
+  console.log("Servidor escuchando en http://localhost:3000");
+});
